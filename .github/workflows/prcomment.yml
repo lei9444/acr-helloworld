@@ -25,7 +25,7 @@ jobs:
       - name: Inspect
         if: contains(github.event.comment.body, '/support')   # check the comment if it contains the keywords
         run: |
-          docker push ghcr.io/OWNER/IMAGE_NAME:latest
+          docker push ghcr.io/lei9444/${{ github.sha }}:latest
       # - name: test
       #   if: contains(github.event.comment.body, '/test')  # check the comment if it contains the keywords
       #   run: |
