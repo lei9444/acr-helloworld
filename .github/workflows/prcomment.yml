@@ -18,8 +18,8 @@ jobs:
        uses: docker/build-push-action@v2
        with:
           push: false
-          context: ./AcrHelloworld/
-          file: Dockerfile
+          context: .
+          file: ./AcrHelloworld/Dockerfile
           tags: test
      - name: test
        if: contains(github.event.comment.body, '/test')  # check the comment if it contains the keywords
