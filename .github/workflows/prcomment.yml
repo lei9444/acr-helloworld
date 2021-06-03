@@ -13,25 +13,19 @@ jobs:
         if: contains(github.event.comment.body, '/support')   # check the comment if it contains the keywords
         uses: actions/checkout@v2
 
-      - name: Push to GitHub Packages
+      - name: Build
         if: contains(github.event.comment.body, '/support')   # check the comment if it contains the keywords
         uses: docker/build-push-action@v2
         with:
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITGUB_PAT }}
-          registry: ghcr.io
-          repository: test
-          tags: ${{ github.sha }}
-          dockerfile: ./AcrHelloworld/Dockerfile
+            load: true
+            context: .
+            file: ./AcrHelloworld/Dockerfile
+            tags: ${{ github.sha }}
 
-      # - name: Build
-      #   if: contains(github.event.comment.body, '/support')   # check the comment if it contains the keywords
-      #   uses: docker/build-push-action@v2
-      #   with:
-      #       push: false
-      #       context: .
-      #       file: ./AcrHelloworld/Dockerfile
-      #       tags: test
+      - name: Inspect
+          if: contains(github.event.comment.body, '/support')
+          run: |
+            docker push ghcr.io/OWNER/IMAGE_NAME:latest
       # - name: test
       #   if: contains(github.event.comment.body, '/test')  # check the comment if it contains the keywords
       #   run: |
