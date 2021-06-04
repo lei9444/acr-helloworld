@@ -12,7 +12,7 @@ jobs:
       - name: Azure Login
         uses: azure/login@v1
         with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Checkout
         if: contains(github.event.comment.body, '/support')   # check the comment if it contains the keywords
