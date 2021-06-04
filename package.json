@@ -1,0 +1,22 @@
+{
+  "name": "root",
+  "license": "MIT",
+  "private": true,
+  "engines": {
+    "node": ">=12"
+  },
+  "workspaces": {
+    "packages": [
+      "client",
+      "server"
+    ]
+  },
+  "scripts": {
+    "build": "yarn workspace smallcomposer build",
+    "start": "cross-env NODE_ENV=production PORT=3000 yarn start:server",
+    "start:server": "yarn workspace server start"
+  },
+  "devDependencies": {
+    "cross-env": "^6.0.3"
+  }
+}
