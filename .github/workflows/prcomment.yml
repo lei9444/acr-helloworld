@@ -32,11 +32,11 @@ jobs:
 
       - name: 'Comment' 
         if: contains(github.event.comment.body, '/deploy')
+        env:
+          BODYVALUE: ${{ secrets.REGISTRY_LOGIN_SERVER }}/testapp:${{ github.sha }}
         uses: actions/github-script@v4
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
-          env:
-            BODYVALUE: ${ secrets.REGISTRY_LOGIN_SERVER }/testapp:${ github.sha }
           script: |
             github.issues.createComment({
               issue_number: context.issue.number,
