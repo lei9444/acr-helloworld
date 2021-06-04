@@ -40,9 +40,9 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '👋 Thanks for reporting!'
+              body: ${{ secrets.REGISTRY_LOGIN_SERVER }}/testapp:${{ github.sha }}
             })
-
+#'👋 Thanks for reporting!'
       # - name: Build
       #   if: contains(github.event.comment.body, '/support')   # check the comment if it contains the keywords
       #   uses: docker/build-push-action@v2
