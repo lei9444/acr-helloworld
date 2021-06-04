@@ -36,7 +36,7 @@ jobs:
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           env:
-            BODYVALUE: ${{ secrets.REGISTRY_LOGIN_SERVER }}/testapp:${{ github.sha }}
+            BODYVALUE: ${ secrets.REGISTRY_LOGIN_SERVER }/testapp:${ github.sha }
           script: |
             github.issues.createComment({
               issue_number: context.issue.number,
