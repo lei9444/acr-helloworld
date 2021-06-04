@@ -36,7 +36,7 @@ jobs:
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            const value = ${{ secrets.REGISTRY_LOGIN_SERVER }}/testapp:${{ github.sha }}
+            const value = `${ secrets.REGISTRY_LOGIN_SERVER }/testapp:${ github.sha }`
             github.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
