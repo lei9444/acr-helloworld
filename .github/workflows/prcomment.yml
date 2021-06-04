@@ -35,13 +35,14 @@ jobs:
         uses: actions/github-script@v4
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
+          env:
+            BODYVALUE: ${{ secrets.REGISTRY_LOGIN_SERVER }}/testapp:${{ github.sha }}
           script: |
-            const value = `${ secrets.REGISTRY_LOGIN_SERVER }/testapp:${ github.sha }`
             github.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: value
+              body: process.env.BODYVALUE
             })
 #'👋 Thanks for reporting!'
       # - name: Build
