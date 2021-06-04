@@ -10,27 +10,39 @@ jobs:
     steps:
 
       - name: Azure Login
+        if: contains(github.event.comment.body, '/deploy')
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Checkout
-        if: contains(github.event.comment.body, '/support')   # check the comment if it contains the keywords
+        if: contains(github.event.comment.body, '/deploy')
         uses: actions/checkout@v2
 
-      - name: Build
-        if: contains(github.event.comment.body, '/support')   # check the comment if it contains the keywords
-        uses: docker/build-push-action@v2
+      - name: 'Build and push image'
+        if: contains(github.event.comment.body, '/deploy')
+        uses: azure/docker-login@v1
         with:
-            load: true
-            context: .
-            file: ./AcrHelloworld/Dockerfile
-            tags: ghcr.io/lei9444/test
+          login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+      - run: |
+          docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/testapp:${{ github.sha }}
+          docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/testapp:${{ github.sha }}
 
-      - name: Inspect
-        if: contains(github.event.comment.body, '/support')   # check the comment if it contains the keywords
-        run: |
-          docker push ghcr.io/lei9444/test
+      # - name: Build
+      #   if: contains(github.event.comment.body, '/support')   # check the comment if it contains the keywords
+      #   uses: docker/build-push-action@v2
+      #   with:
+      #       load: true
+      #       context: .
+      #       file: ./AcrHelloworld/Dockerfile
+      #       tags: ghcr.io/lei9444/test
+
+      # - name: Inspect
+      #   if: contains(github.event.comment.body, '/support')   # check the comment if it contains the keywords
+      #   run: |
+      #     docker push ghcr.io/lei9444/test
       # - name: test
       #   if: contains(github.event.comment.body, '/test')  # check the comment if it contains the keywords
       #   run: |
