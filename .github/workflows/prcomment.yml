@@ -30,6 +30,19 @@ jobs:
           docker build . -f ./AcrHelloworld/Dockerfile -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/testapp:${{ github.sha }}
           docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/testapp:${{ github.sha }}
 
+      - name: 'Comment'
+        if: contains(github.event.comment.body, '/deploy')
+        - uses: actions/github-script@v4
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '👋 Thanks for reporting!'
+            })
+            
       # - name: Build
       #   if: contains(github.event.comment.body, '/support')   # check the comment if it contains the keywords
       #   uses: docker/build-push-action@v2
