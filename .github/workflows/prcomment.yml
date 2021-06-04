@@ -28,7 +28,7 @@ jobs:
           username: ${{ secrets.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
       - run: |
-          docker build . -f ./AcrHelloworld/Dockerfile -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/testapp:${{ github.sha }}
+          docker build . -f .Dockerfile -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/testapp:${{ github.sha }}
           docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/testapp:${{ github.sha }}
 
       - name: 'Comment' 
