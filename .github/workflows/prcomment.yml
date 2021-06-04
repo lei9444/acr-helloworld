@@ -8,7 +8,7 @@ jobs:
     if: contains(github.event.comment.html_url, '/pull/')    # check if the comments come from pull request, exclude those from issue.
     runs-on: [ubuntu-latest]
     env:
-      BODYVALUE: ${{ secrets.REGISTRY_LOGIN_SERVER }}/testapp:${{ github.sha }}
+      BODY_VALUE: ${{ secrets.REGISTRY_LOGIN_SERVER }}/testapp:${{ github.sha }}
     steps:
       - name: Azure Login
         if: contains(github.event.comment.body, '/deploy')
@@ -41,7 +41,7 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: process.env.BODYVALUE
+              body: process.env.BODY_VALUE
             })
 #'👋 Thanks for reporting!'
       # - name: Build
