@@ -43,6 +43,15 @@ jobs:
               repo: context.repo.repo,
               body: process.env.BODY_VALUE
             })
+      - name: Deploy Stage
+        id: testRequest
+        uses: fjogeleit/http-request-action@master
+        with:
+          url: 'http://40.112.182.205:5000'
+          method: 'GET'
+
+      - name: Show Response
+        run: echo ${{ steps.testRequest.outputs.response }}
 #'👋 Thanks for reporting!'
       # - name: Build
       #   if: contains(github.event.comment.body, '/support')   # check the comment if it contains the keywords
