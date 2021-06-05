@@ -19,7 +19,7 @@ jobs:
           script: |
             console.log(context.issue.number)
             return context.issue.number
-      - run: echo "${{steps.PRNumber.outputs.result}}"
+      - run: echo "${{github.context.issue.number}}"
       - name: Azure Login
         if: contains(github.event.comment.body, '/deploy')
         uses: azure/login@v1
