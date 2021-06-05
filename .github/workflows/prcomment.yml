@@ -17,9 +17,7 @@ jobs:
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            console.log(context.issue.number)
             return context.issue.number
-      - run: echo "${{github.context.issue.number}}"
       - name: Azure Login
         if: contains(github.event.comment.body, '/deploy')
         uses: azure/login@v1
@@ -38,11 +36,13 @@ jobs:
           username: ${{ secrets.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
       - run: |
-          docker build . -f Dockerfile -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/testapp:${{ github.event.pull_request.number }}
-          docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/testapp:${{ github.event.pull_request.number }}
+          docker build . -f Dockerfile -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/testapp:${{ steps.PRNumber.outputs.result }}
+          docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/testapp:${{ steps.PRNumber.outputs.result }}
 
       - name: 'Comment' 
         if: contains(github.event.comment.body, '/deploy')
+        env:
+          BODY_VALUE: ${{ secrets.REGISTRY_LOGIN_SERVER }}/testapp:${{ steps.PRNumber.outputs.result }}
         uses: actions/github-script@v4
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
