@@ -7,8 +7,6 @@ jobs:
   job01:
     if: contains(github.event.comment.html_url, '/pull/')    # check if the comments come from pull request, exclude those from issue.
     runs-on: [ubuntu-latest]
-    env:
-      BODY_VALUE: ${{ secrets.REGISTRY_LOGIN_SERVER }}/testapp:${{ github.event.pull_request.number }}
     steps:        
       - name: PR number 
         if: contains(github.event.comment.body, '/deploy')
@@ -18,41 +16,41 @@ jobs:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
             return context.issue.number
-      - name: Azure Login
-        if: contains(github.event.comment.body, '/deploy')
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+#       - name: Azure Login
+#         if: contains(github.event.comment.body, '/deploy')
+#         uses: azure/login@v1
+#         with:
+#           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Checkout
-        if: contains(github.event.comment.body, '/deploy')
-        uses: actions/checkout@v2
+#       - name: Checkout
+#         if: contains(github.event.comment.body, '/deploy')
+#         uses: actions/checkout@v2
 
-      - name: 'Build and push image'
-        if: contains(github.event.comment.body, '/deploy')
-        uses: azure/docker-login@v1
-        with:
-          login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
-          username: ${{ secrets.REGISTRY_USERNAME }}
-          password: ${{ secrets.REGISTRY_PASSWORD }}
-      - run: |
-          docker build . -f Dockerfile -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/testapp:${{ steps.PRNumber.outputs.result }}
-          docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/testapp:${{ steps.PRNumber.outputs.result }}
+#       - name: 'Build and push image'
+#         if: contains(github.event.comment.body, '/deploy')
+#         uses: azure/docker-login@v1
+#         with:
+#           login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+#           username: ${{ secrets.REGISTRY_USERNAME }}
+#           password: ${{ secrets.REGISTRY_PASSWORD }}
+#       - run: |
+#           docker build . -f Dockerfile -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/testapp:${{ steps.PRNumber.outputs.result }}
+#           docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/testapp:${{ steps.PRNumber.outputs.result }}
 
-      - name: 'Comment' 
-        if: contains(github.event.comment.body, '/deploy')
-        env:
-          BODY_VALUE: ${{ secrets.REGISTRY_LOGIN_SERVER }}/testapp:${{ steps.PRNumber.outputs.result }}
-        uses: actions/github-script@v4
-        with:
-          github-token: ${{secrets.GITHUB_TOKEN}}
-          script: |
-            github.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: process.env.BODY_VALUE
-            })
+#       - name: 'Comment' 
+#         if: contains(github.event.comment.body, '/deploy')
+#         env:
+#           BODY_VALUE: ${{ secrets.REGISTRY_LOGIN_SERVER }}/testapp:${{ steps.PRNumber.outputs.result }}
+#         uses: actions/github-script@v4
+#         with:
+#           github-token: ${{secrets.GITHUB_TOKEN}}
+#           script: |
+#             github.issues.createComment({
+#               issue_number: context.issue.number,
+#               owner: context.repo.owner,
+#               repo: context.repo.repo,
+#               body: process.env.BODY_VALUE
+#             })
       - name: Deploy Stage
         id: testRequest
         uses: fjogeleit/http-request-action@master
@@ -63,21 +61,3 @@ jobs:
 
       - name: Show Response
         run: echo ${{ steps.testRequest.outputs.response }}
-#'👋 Thanks for reporting!'
-      # - name: Build
-      #   if: contains(github.event.comment.body, '/support')   # check the comment if it contains the keywords
-      #   uses: docker/build-push-action@v2
-      #   with:
-      #       load: true
-      #       context: .
-      #       file: ./AcrHelloworld/Dockerfile
-      #       tags: ghcr.io/lei9444/test
-
-      # - name: Inspect
-      #   if: contains(github.event.comment.body, '/support')   # check the comment if it contains the keywords
-      #   run: |
-      #     docker push ghcr.io/lei9444/test
-      # - name: test
-      #   if: contains(github.event.comment.body, '/test')  # check the comment if it contains the keywords
-      #   run: |
-      #     echo test
