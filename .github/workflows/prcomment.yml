@@ -10,7 +10,13 @@ jobs:
     env:
       BODY_VALUE: ${{ secrets.REGISTRY_LOGIN_SERVER }}/testapp:${{ github.event.pull_request.number }}
     steps:        
-      - run: echo ${{github.context.issue}}
+      - name: 'Comment' 
+        if: contains(github.event.comment.body, '/deploy')
+        uses: actions/github-script@v4
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            console.log(context.issue.number)
       - name: Azure Login
         if: contains(github.event.comment.body, '/deploy')
         uses: azure/login@v1
