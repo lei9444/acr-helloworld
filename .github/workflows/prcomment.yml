@@ -10,6 +10,11 @@ jobs:
     env:
       BODY_VALUE: ${{ secrets.REGISTRY_LOGIN_SERVER }}/testapp:${{ github.event.pull_request.number }}
     steps:
+      - name: pr-number-action
+        id: getPrNumber
+        uses: kkak10/pr-number-action@v1.3
+        
+      - run: echo ${{steps.You-id-before.outputs.pr}}
       - name: Azure Login
         if: contains(github.event.comment.body, '/deploy')
         uses: azure/login@v1
