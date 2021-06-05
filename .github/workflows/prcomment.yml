@@ -57,7 +57,7 @@ jobs:
         id: testRequest
         uses: fjogeleit/http-request-action@master
         with:
-          url: 'http://40.112.182.205:5000'
+          url: 'http://40.112.182.205:5000/api/docker/pull'
           method: 'POST'
           data: '{version: ${{steps.PRNumber.outputs.result}}}'
 
