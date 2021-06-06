@@ -58,6 +58,7 @@ jobs:
           url: 'http://40.112.182.205:5000/api/docker/pull'
           method: 'POST'
           data: '{version: ${{steps.PRNumber.outputs.result}}}'
+          escapeData: 'true'
 
       - name: Show Response
         run: echo ${{ steps.testRequest.outputs.response }}
