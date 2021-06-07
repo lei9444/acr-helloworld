@@ -66,7 +66,7 @@ jobs:
         env:
           BODY_VALUE: ${{ secrets.REGISTRY_LOGIN_SERVER }}/testapp:${{ steps.PRNumber.outputs.result }}
           PR_NUMBER: ${{ steps.PRNumber.outputs.result }}
-          URL: 'http://40.112.182.205:${{steps.run.outputs.result}}'
+          URL: 'http://40.112.182.205:${{steps.run.outputs.result.port}}'
         uses: actions/github-script@v4
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
