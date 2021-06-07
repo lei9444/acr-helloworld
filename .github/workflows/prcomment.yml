@@ -37,27 +37,46 @@ jobs:
 #           docker build . -f Dockerfile -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/testapp:${{ steps.PRNumber.outputs.result }}
 #           docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/testapp:${{ steps.PRNumber.outputs.result }}
 
-#       - name: 'Comment' 
-#         if: contains(github.event.comment.body, '/deploy')
-#         env:
-#           BODY_VALUE: ${{ secrets.REGISTRY_LOGIN_SERVER }}/testapp:${{ steps.PRNumber.outputs.result }}
-#         uses: actions/github-script@v4
-#         with:
-#           github-token: ${{secrets.GITHUB_TOKEN}}
-#           script: |
-#             github.issues.createComment({
-#               issue_number: context.issue.number,
-#               owner: context.repo.owner,
-#               repo: context.repo.repo,
-#               body: process.env.BODY_VALUE
-#             })
-      - name: Deploy Stage
-        id: testRequest
+      - name: Pull Docker
+        if: contains(github.event.comment.body, '/deploy')
+        id: pull
         uses: fjogeleit/http-request-action@master
         with:
           url: 'http://40.112.182.205:5000/api/docker/pull'
           method: 'POST'
           data: '{"version":${{steps.PRNumber.outputs.result}}}'
+          timeout: 60000
 
       - name: Show Response
-        run: echo ${{ steps.testRequest.outputs.response }}
+        if: contains(github.event.comment.body, '/deploy')
+        run: echo ${{ steps.pull.outputs.response }}
+        
+      - name: Run Docker
+        if: contains(github.event.comment.body, '/deploy')
+        id: run
+        uses: fjogeleit/http-request-action@master
+        with:
+          url: 'http://40.112.182.205:5000/api/docker/run'
+          method: 'POST'
+          data: '{"version":${{steps.PRNumber.outputs.result}}}'
+          timeout: 60000
+          
+      - name: 'Comment' 
+        if: contains(github.event.comment.body, '/deploy')
+        env:
+          BODY_VALUE: ${{ secrets.REGISTRY_LOGIN_SERVER }}/testapp:${{ steps.PRNumber.outputs.result }}
+          PR_NUMBER: ${{ steps.PRNumber.outputs.result }}
+          URL: 'http://40.112.182.205:${{steps.run.outputs.result}}'
+        uses: actions/github-script@v4
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            const body = {
+              url: http://40.112.182.205:
+            }
+            github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `open ${process.env.URL}`
+            })
