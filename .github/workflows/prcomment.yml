@@ -45,7 +45,7 @@ jobs:
           url: 'http://40.112.182.205:5000/api/docker/pull'
           method: 'POST'
           data: '{"version":${{steps.PRNumber.outputs.result}}}'
-          timeout: 60000
+          timeout: 600000
 
       - name: Show Response
         if: contains(github.event.comment.body, '/deploy')
@@ -59,7 +59,7 @@ jobs:
           url: 'http://40.112.182.205:5000/api/docker/run'
           method: 'POST'
           data: '{"version":${{steps.PRNumber.outputs.result}}}'
-          timeout: 60000
+          timeout: 600000
           
       - name: 'Comment' 
         if: contains(github.event.comment.body, '/deploy')
