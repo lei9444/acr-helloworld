@@ -70,15 +70,16 @@ jobs:
         env:
           BODY_VALUE: ${{ secrets.REGISTRY_LOGIN_SERVER }}/testapp:${{ steps.PRNumber.outputs.result }}
           PR_NUMBER: ${{ steps.PRNumber.outputs.result }}
-          URL: 'http://40.112.182.205:${{steps.run.outputs.response.port}}'
+          URL: 'http://40.112.182.205'
+          PORT_STR: ${{steps.run.outputs.response}}
         uses: actions/github-script@v4
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            console.log(steps.run.outputs.response.port)
+            const port = JSON.parse(process.env.PORT_STR).port;
             github.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `open ${process.env.URL}`
+              body: `open ${process.env.URL}:${port}`
             })
